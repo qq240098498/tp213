@@ -799,6 +799,7 @@
       return;
     }
     var settings = state.settings || {};
+    var lossPerDay = b.lossPerDay != null ? b.lossPerDay : settings.lossPerDayWan;
     box.innerHTML = '<div class="detail-grid">'
       + itemHtml(['水库', b.reservoirName])
       + itemHtml(['起始日期', b.fromDate])
@@ -817,11 +818,11 @@
       + '<h4>口径（一行行写出来，数字全部取接口字段）</h4>'
       + '<ul class="caliber">'
       + '<li>口径一：流量按每天 <b>86400</b> 秒换算成水量，再除以 10000 折算成万m³。</li>'
-      + '<li>口径二：损失按 <b>天数 × 每天损失</b>，每天损失取设置里的 ' + esc(dash(settings.lossPerDayWan)) + ' 万m³。</li>'
+      + '<li>口径二：损失按 <b>天数 × 每天损失</b>，每天损失取设置里的 ' + esc(dash(lossPerDay)) + ' 万m³。</li>'
       + '<li>口径三：残差 = 入库水量 − 出库水量 − 损失 − 蓄变；残差不超过容差才算平衡。</li>'
       + '<li>入库水量：平均入库流量 <b>' + esc(numText(b.meanInflow)) + '</b> m³/s × 天数 <b>' + esc(numText(b.days)) + '</b> × 86400 ÷ 10000，接口返回 <b>' + esc(numText(b.inflowVolume)) + '</b> 万m³。</li>'
       + '<li>出库水量：平均出库流量 <b>' + esc(numText(b.meanRelease)) + '</b> m³/s × 天数 <b>' + esc(numText(b.days)) + '</b> × 86400 ÷ 10000，接口返回 <b>' + esc(numText(b.releaseVolume)) + '</b> 万m³（前端不重算，按接口原值显示）。</li>'
-      + '<li>损失：天数 <b>' + esc(numText(b.days)) + '</b> × 每天损失 <b>' + esc(dash(settings.lossPerDayWan)) + '</b>，接口返回 <b>' + esc(numText(b.lossVolume)) + '</b> 万m³。</li>'
+      + '<li>损失：天数 <b>' + esc(numText(b.days)) + '</b> × 每天损失 <b>' + esc(dash(lossPerDay)) + '</b>，接口返回 <b>' + esc(numText(b.lossVolume)) + '</b> 万m³。</li>'
       + '<li>蓄变：末库容 <b>' + esc(numText(b.endCapacity)) + '</b> − 首库容 <b>' + esc(numText(b.startCapacity)) + '</b>，接口返回 <b>' + esc(numText(b.deltaStorage)) + '</b> 万m³（首水位 ' + esc(numText(b.startLevel)) + ' m、末水位 ' + esc(numText(b.endLevel)) + ' m 由接口按曲线求库容）。</li>'
       + '<li>残差：接口返回 <b>' + esc(numText(b.residual)) + '</b> 万m³；容差取设置里 <b>' + esc(numText(b.tolerance)) + '</b> 万m³；是否平衡以接口返回的 <code>balanced</code> 为准：<b>' + esc(b.balanced === true ? '平衡' : '不平衡') + '</b>。</li>'
       + '</ul>';
