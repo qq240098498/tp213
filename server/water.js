@@ -96,8 +96,9 @@ function balance(data, reservoirId, fromDate, toDate) {
   const meanRelease = store.round(releaseRows.reduce((s, r) => s + Number(r.flow), 0) / Math.max(1, releaseRows.length), 3);
 
   const inflowVolume = store.round((meanInflow * days * 86400) / 10000, 3);
-  const releaseVolume = store.round((meanRelease * days * 3600) / 10000, 3);
-  const lossVolume = 0;
+  const releaseVolume = store.round((meanRelease * days * 86400) / 10000, 3);
+  // 损失 = 时段天数 × 每天损失（设置里的 lossPerDayWan，万m³/天）
+  const lossVolume = store.round(days * (Number(settings.lossPerDayWan) || 0), 3);
   const startLevel = from.length ? Number(from[0].level) : 0;
   const endLevel = from.length ? Number(from[from.length - 1].level) : 0;
   const startCapacity = curve ? capacityAt(curve, startLevel, settings) : 0;
